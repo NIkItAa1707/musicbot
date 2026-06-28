@@ -7,8 +7,10 @@ from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from config import settings
 
-TOKEN = "8846144422:AAFx5PiJeWTcuaU9FWMrwqnHVakAnpH2JV4"
+
+TOKEN = settings.BOT_TOKEN
 
 
 # БД песен
