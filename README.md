@@ -87,7 +87,8 @@ settings = Settings()
 
 python main.py
 
-### 5. В случае чего можете обратиться к автору 
+### 5. В случае чего можете 
+
 Обратиться к автору
 
 Либо воспользоваться уже готовым ботом: @flndme_bot
@@ -118,14 +119,15 @@ python main.py
 
 ## Структура проекта
 
+```
 music_bot/
-├── main.py
-├── config.py
-├── songs.db
-├── requirements.txt
-├── README.md
-└── upload_songs.py
-
+├── main.py          # Главный файл бота
+├── config.py        # Настройки (токен)
+├── songs.db         # База данных песен
+├── requirements.txt # Зависимости
+├── README.md        # Документация
+└── upload_songs.py  # Скрипт для массовой загрузки (опционально)
+```
 
 ## Структура базы данных
 
