@@ -129,15 +129,15 @@ class AddSongStates(StatesGroup):
 def get_main_menu():
     builder = InlineKeyboardBuilder()
     builder.row(
-        InlineKeyboardButton(text="🎵 Поиск", callback_data="menu_search"),
-        InlineKeyboardButton(text="📋 Список песен", callback_data="menu_list"),
+        InlineKeyboardButton(text="Поиск", callback_data="menu_search"),
+        InlineKeyboardButton(text="Список песен", callback_data="menu_list"),
     )
     builder.row(
-        InlineKeyboardButton(text="📊 Статистика", callback_data="menu_stats"),
-        InlineKeyboardButton(text="❓ Помощь", callback_data="menu_help"),
+        InlineKeyboardButton(text="Статистика", callback_data="menu_stats"),
+        InlineKeyboardButton(text="Помощь", callback_data="menu_help"),
     )
     builder.row(
-        InlineKeyboardButton(text="➕ Добавить песню", callback_data="menu_add")
+        InlineKeyboardButton(text="Добавить песню", callback_data="menu_add")
     )
     return builder.as_markup()
 
@@ -153,16 +153,16 @@ def get_songs_list(page=0):
     for song in songs:
         builder.row(
             InlineKeyboardButton(
-                text=f"🎵 {song['title']}", callback_data=f"play_{song['id']}"
+                text=f"{song['title']}", callback_data=f"play_{song['id']}"
             )
         )
 
     nav = []
     if page > 0:
-        nav.append(InlineKeyboardButton(text="⬅️ Назад", callback_data=f"page_{page-1}"))
+        nav.append(InlineKeyboardButton(text="Назад", callback_data=f"page_{page-1}"))
     if offset + per_page < total:
         nav.append(
-            InlineKeyboardButton(text="➡️ Вперед", callback_data=f"page_{page+1}")
+            InlineKeyboardButton(text="Вперед", callback_data=f"page_{page+1}")
         )
     if nav:
         builder.row(*nav)
@@ -170,10 +170,10 @@ def get_songs_list(page=0):
     total_pages = (total + per_page - 1) // per_page if total > 0 else 1
     builder.row(
         InlineKeyboardButton(
-            text=f"📄 Страница {page+1}/{total_pages}", callback_data="noop"
+            text=f"Страница {page+1}/{total_pages}", callback_data="noop"
         )
     )
-    builder.row(InlineKeyboardButton(text="🏠 В меню", callback_data="menu_main"))
+    builder.row(InlineKeyboardButton(text="В меню", callback_data="menu_main"))
 
     return builder.as_markup()
 
@@ -190,7 +190,7 @@ search_history = []
 async def start(message: types.Message):
     count = get_total_songs()
     await message.answer(
-        f"🎵 Привет!\n\n📊 В коллекции {count} песен\n\nВыбери действие:",
+        f"Привет!\n\nВ коллекции {count} песен\n\nВыбери действие:",
         reply_markup=get_main_menu(),
     )
 
@@ -200,11 +200,11 @@ async def list_cmd(message: types.Message):
     total = get_total_songs()
     if total == 0:
         await message.answer(
-            "📋 В коллекции пока нет песен!", reply_markup=get_main_menu()
+            "В коллекции пока нет песен!", reply_markup=get_main_menu()
         )
         return
     await message.answer(
-        f"📋 Список песен\n\nВсего: {total}", reply_markup=get_songs_list(0)
+        f"Список песен\n\nВсего: {total}", reply_markup=get_songs_list(0)
     )
 
 
@@ -212,7 +212,7 @@ async def list_cmd(message: types.Message):
 async def add_song_cmd(message: types.Message, state: FSMContext):
     await state.set_state(AddSongStates.waiting_for_title)
     await message.answer(
-        "📝 Отправь мне MP3 файл, а затем напиши название песни!",
+        "Отправь мне MP3 файл, а затем напиши название песни!",
         reply_markup=get_main_menu(),
     )
 
@@ -234,7 +234,7 @@ async def handle_audio(message: types.Message, state: FSMContext):
 
     await state.update_data(file_id=file_id)
     await state.set_state(AddSongStates.waiting_for_title)
-    await message.answer("📝 Введите название песни:", reply_markup=get_main_menu())
+    await message.answer("Введите название песни:", reply_markup=get_main_menu())
 
 
 @dp.message(AddSongStates.waiting_for_title)
@@ -244,14 +244,14 @@ async def process_title(message: types.Message, state: FSMContext):
     file_id = data.get("file_id")
 
     if not file_id:
-        await message.answer("❌ Ошибка: не найден файл", reply_markup=get_main_menu())
+        await message.answer("Ошибка: не найден файл", reply_markup=get_main_menu())
         await state.clear()
         return
 
     existing = get_song_by_keyword(title)
     if existing:
         await message.answer(
-            f"⚠️ Песня '{title}' уже есть!", reply_markup=get_main_menu()
+            f"Песня '{title}' уже есть!", reply_markup=get_main_menu()
         )
         await state.clear()
         return
@@ -261,7 +261,7 @@ async def process_title(message: types.Message, state: FSMContext):
     await state.clear()
 
     await message.answer(
-        f"✅ Песня добавлена!\n\n🎵 {title}\n📊 Всего песен: {count}",
+        f"Песня добавлена!\n\n🎵 {title}\nВсего песен: {count}",
         reply_markup=get_main_menu(),
     )
 
@@ -288,12 +288,12 @@ async def search(message: types.Message):
     if results:
         text = "\n".join([f"• {r['title']}" for r in results[:10]])
         await message.answer(
-            f"🔍 Нашёл похожие:\n\n{text}\n\n💡 Напиши точное название",
+            f"Нашёл похожие:\n\n{text}\n\n💡 Напиши точное название",
             reply_markup=get_main_menu(),
         )
     else:
         await message.answer(
-            f"❌ Не нашёл: {query}\n\nПопробуй /list", reply_markup=get_main_menu()
+            f"Не нашёл: {query}\n\nПопробуй /list", reply_markup=get_main_menu()
         )
 
 
@@ -305,12 +305,12 @@ async def callback(call: types.CallbackQuery):
 
     if data == "menu_main":
         await call.message.edit_text(
-            "🎵 Главное меню\n\nВыбери действие:", reply_markup=get_main_menu()
+            "Главное меню\n\nВыбери действие:", reply_markup=get_main_menu()
         )
 
     elif data == "menu_search":
         await call.message.edit_text(
-            "🔍 Поиск песни\n\nПросто напиши название в чат!",
+            "Поиск песни\n\nПросто напиши название в чат!",
             reply_markup=get_main_menu(),
         )
 
@@ -318,11 +318,11 @@ async def callback(call: types.CallbackQuery):
         total = get_total_songs()
         if total == 0:
             await call.message.edit_text(
-                "📋 В коллекции пока нет песен!", reply_markup=get_main_menu()
+                "В коллекции пока нет песен!", reply_markup=get_main_menu()
             )
             return
         await call.message.edit_text(
-            f"📋 Список песен\n\nВсего: {total}", reply_markup=get_songs_list(0)
+            f"Список песен\n\nВсего: {total}", reply_markup=get_songs_list(0)
         )
 
     elif data == "menu_stats":
@@ -333,25 +333,25 @@ async def callback(call: types.CallbackQuery):
             else "Пока пусто"
         )
         await call.message.edit_text(
-            f"📊 Статистика\n\n🎵 Всего песен: {total}\n\n📝 История поиска:\n{history_text}",
+            f"Статистика\n\n🎵 Всего песен: {total}\n\nИстория поиска:\n{history_text}",
             reply_markup=get_main_menu(),
         )
 
     elif data == "menu_help":
         await call.message.edit_text(
-            "❓ Помощь\n\n"
-            "📌 Команды:\n"
+            "Помощь\n\n"
+            "Команды:\n"
             "/start - Главное меню\n"
             "/list - Список песен\n"
             "/add_song - Добавить песню\n\n"
-            "📌 Как найти песню:\n"
+            "Как найти песню:\n"
             "Напиши название в чат",
             reply_markup=get_main_menu(),
         )
 
     elif data == "menu_add":
         await call.message.edit_text(
-            "➕ Добавление песни\n\n"
+            "Добавление песни\n\n"
             "1. Отправь MP3 файл\n"
             "2. Напиши название\n"
             "3. Готово!\n\n"
@@ -363,7 +363,7 @@ async def callback(call: types.CallbackQuery):
         page = int(data.split("_")[1])
         total = get_total_songs()
         await call.message.edit_text(
-            f"📋 Список песен\n\nВсего: {total}", reply_markup=get_songs_list(page)
+            f"Список песен\n\nВсего: {total}", reply_markup=get_songs_list(page)
         )
 
     elif data.startswith("play_"):
@@ -375,7 +375,7 @@ async def callback(call: types.CallbackQuery):
                 await call.message.answer_audio(
                     audio=song["file_id"],
                     title=song["title"],
-                    caption=f"🎵 {song['title']}",
+                    caption=f"{song['title']}",
                 )
                 await call.message.answer(
                     "🎵 Главное меню", reply_markup=get_main_menu()
@@ -391,7 +391,7 @@ async def callback(call: types.CallbackQuery):
 async def main():
     logging.basicConfig(level=logging.INFO)
     init_db()
-    logging.info("🚀 Бот запущен!")
+    logging.info("Бот запущен!")
 
     while True:
         try:
